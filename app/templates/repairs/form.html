@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="max-w-xl mx-auto px-6 py-16">
+<div class="bg-white dark:bg-slate-900 p-6 rounded-xl shadow">
+
+<h2 class="text-2xl font-bold mb-4">{{ action }} Repair Order</h2>
+
+<form method="post" class="space-y-4">
+
+<select name="customer_id" required
+ class="w-full p-2 rounded bg-slate-100 dark:bg-slate-800">
+    {% for c in customers %}
+    <option value="{{ c.id }}"
+        {% if repair and repair.customer_id == c.id %}selected{% endif %}>
+        {{ c.name }}
+    </option>
+    {% endfor %}
+</select>
+
+<input name="device" placeholder="Device"
+ value="{{ repair.device if repair else '' }}" required
+ class="w-full p-2 rounded bg-slate-100 dark:bg-slate-800">
+
+<textarea name="issue_description" placeholder="Issue description"
+ class="w-full p-2 rounded bg-slate-100 dark:bg-slate-800"
+ required>{{ repair.issue_description if repair else '' }}</textarea>
+
+<select name="status"
+ class="w-full p-2 rounded bg-slate-100 dark:bg-slate-800">
+    {% for s in ['Pending','In Progress','Completed','Delivered'] %}
+    <option value="{{ s }}"
+        {% if repair and repair.status == s %}selected{% endif %}>
+        {{ s }}
+    </option>
+    {% endfor %}
+</select>
+
+<button class="w-full bg-blue-500 text-white py-2 rounded">
+    {{ action }} Repair
+</button>
+
+</form>
+
+</div>
+</section>
+{% endblock %}

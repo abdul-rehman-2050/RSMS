@@ -1,54 +1,82 @@
 {% extends "base.html" %}
-
 {% block content %}
-<section class="max-w-5xl mx-auto px-6 py-20">
-    <div class="bg-white dark:bg-slate-900 shadow-lg rounded-xl p-8 transition-colors duration-300">
-        <h2 class="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-6">Dashboard</h2>
+<section class="max-w-6xl mx-auto px-6 py-16 space-y-10">
 
-        <div class="mb-6 flex justify-between items-center">
-            <h3 class="text-xl font-semibold text-slate-900 dark:text-slate-100">Customers</h3>
-            <a href="{{ url_for('customer.add_customer') }}"
-               class="bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-500
-                      text-white font-semibold px-4 py-2 rounded-lg transition-colors duration-200">
-               + Add Customer
-            </a>
-        </div>
+<!-- stats -->
+<div class="grid md:grid-cols-3 gap-6">
+    <div class="bg-white dark:bg-slate-900 p-6 rounded-xl shadow">
+        <p class="text-sm text-slate-500">Customers</p>
+        <p class="text-3xl font-bold">{{ total_customers }}</p>
+    </div>
 
-        <table class="w-full text-sm text-left text-slate-700 dark:text-slate-300">
-            <thead class="uppercase bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100">
-                <tr>
-                    <th class="px-4 py-2">Name</th>
-                    <th class="px-4 py-2">Email</th>
-                    <th class="px-4 py-2">Phone</th>
-                    <th class="px-4 py-2">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for customer in customers %}
-                <tr class="border-b border-slate-200 dark:border-slate-700">
-                    <td class="px-4 py-2">{{ customer.name }}</td>
-                    <td class="px-4 py-2">{{ customer.email }}</td>
-                    <td class="px-4 py-2">{{ customer.phone }}</td>
-                    <td class="px-4 py-2 flex gap-2">
-                        <a href="{{ url_for('customer.edit_customer', id=customer.id) }}"
-                           class="px-2 py-1 bg-yellow-500 hover:bg-yellow-600 dark:bg-yellow-600 dark:hover:bg-yellow-500
-                                  text-white rounded-lg text-xs transition-colors duration-200">Edit</a>
-                        <form action="{{ url_for('customer.delete_customer', id=customer.id) }}" method="post">
-                            <button type="submit"
-                               class="px-2 py-1 bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-500
-                                      text-white rounded-lg text-xs transition-colors duration-200">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="bg-white dark:bg-slate-900 p-6 rounded-xl shadow">
+        <p class="text-sm text-slate-500">Total Repairs</p>
+        <p class="text-3xl font-bold">{{ total_repairs }}</p>
+    </div>
 
-        <a href="{{ url_for('auth.logout') }}"
-           class="mt-6 inline-block bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-500
-                  text-white font-semibold px-6 py-2 rounded-lg transition-colors duration-200">
-           Logout
+    <div class="bg-white dark:bg-slate-900 p-6 rounded-xl shadow">
+        <p class="text-sm text-slate-500">Pending</p>
+        <p class="text-3xl font-bold text-yellow-500">{{ pending_repairs }}</p>
+    </div>
+</div>
+
+<!-- recent repairs -->
+<div class="bg-white dark:bg-slate-900 p-6 rounded-xl shadow">
+    <div class="flex justify-between mb-4">
+        <h3 class="text-xl font-semibold">Recent Repair Orders</h3>
+        <a href="{{ url_for('repair.list_repairs') }}" class="text-blue-500">
+            View All
         </a>
     </div>
+
+    <table class="w-full text-sm">
+        <thead class="bg-slate-100 dark:bg-slate-800">
+            <tr>
+                <th class="p-2 text-left">Customer</th>
+                <th class="p-2">Device</th>
+                <th class="p-2">Status</th>
+                <th class="p-2">Created</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for r in recent_repairs %}
+            <tr class="border-b dark:border-slate-700">
+                <td class="p-2">{{ r.customer.name }}</td>
+                <td class="p-2">{{ r.device }}</td>
+                <td class="p-2">
+                    <span class="px-2 py-1 rounded text-xs
+                        {% if r.status == 'Pending' %}bg-yellow-200 text-yellow-800
+                        {% elif r.status == 'In Progress' %}bg-blue-200 text-blue-800
+                        {% elif r.status == 'Completed' %}bg-green-200 text-green-800
+                        {% else %}bg-slate-200 text-slate-800{% endif %}">
+                        {{ r.status }}
+                    </span>
+                </td>
+                <td class="p-2">{{ r.created_at.strftime('%Y-%m-%d') }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4" class="p-4 text-center text-slate-500">
+                    No repair orders yet
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- quick actions -->
+<div class="flex gap-4">
+    <a href="{{ url_for('customer.add_customer') }}"
+       class="bg-green-500 text-white px-5 py-2 rounded">
+        + Add Customer
+    </a>
+
+    <a href="{{ url_for('repair.add_repair') }}"
+       class="bg-blue-500 text-white px-5 py-2 rounded">
+        + New Repair Order
+    </a>
+</div>
+
 </section>
 {% endblock %}
