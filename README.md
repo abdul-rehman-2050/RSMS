@@ -90,6 +90,7 @@ http://127.0.0.1:5000/
 
 ---
 
+
 ## Contributing / Freelance Use
 
 This project is structured for **small-business usage** and is still in progress.
