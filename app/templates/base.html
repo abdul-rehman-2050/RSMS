@@ -26,7 +26,14 @@
                     <span class="dark:hidden">🌙 Dark</span>
                     <span class="hidden dark:inline">☀️ Light</span>
                 </button>
-                <span class="text-sm text-slate-500 dark:text-slate-400"><a href="{{ url_for('auth.login') }}">Login</a></span>
+                <span class="text-sm text-slate-500 dark:text-slate-400">
+                {% if session.get('user_id') %}
+                    <a href="{{ url_for('auth.logout') }}" class="hover:underline">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="hover:underline">Login</a>
+                {% endif %}
+            </span>
+
             </div>
         </div>
     </header>
