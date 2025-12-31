@@ -7,14 +7,27 @@
 
     <!-- Tailwind CDN (replace with build later) -->
     <script src="https://cdn.tailwindcss.com"></script>
+     <script>
+        // Configure Tailwind to look for a 'dark' class on the html element
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
 </head>
-<body class="bg-slate-950 text-slate-100">
+<body class="bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300">
 
-    <!-- Header -->
-    <header class="border-b border-slate-800">
+    <header class="border-b border-slate-200 dark:border-slate-800">
         <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-            <h1 class="text-lg font-semibold">Repair Shop System</h1>
-            <span class="text-sm text-slate-400">In Progress</span>
+            <h1 class="text-lg font-semibold"><a href="{{ url_for('main.home') }}">Repair Shop System</a></h1>
+            
+            <div class="flex items-center gap-4">
+                <!-- Theme Toggle Button -->
+                <button id="theme-toggle" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:ring-2 ring-slate-400">
+                    <span class="dark:hidden">🌙 Dark</span>
+                    <span class="hidden dark:inline">☀️ Light</span>
+                </button>
+                <span class="text-sm text-slate-500 dark:text-slate-400"><a href="{{ url_for('auth.login') }}">Login</a></span>
+            </div>
         </div>
     </header>
 
@@ -23,12 +36,34 @@
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
-    <footer class="border-t border-slate-800 mt-16">
-        <div class="max-w-6xl mx-auto px-6 py-6 text-sm text-slate-400">
+      <footer class="border-t border-slate-200 dark:border-slate-800 mt-16">
+        <div class="max-w-6xl mx-auto px-6 py-6 text-sm text-slate-500 dark:text-slate-400">
             Built for small businesses • Custom & affordable
         </div>
     </footer>
+
+    <!-- 2. The Logic Script -->
+    <script>
+        const btn = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+
+        // Check for saved preference, otherwise use system preference
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+        } else {
+            html.classList.remove('dark');
+        }
+
+        btn.addEventListener('click', () => {
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+    </script>
 
 </body>
 </html>
