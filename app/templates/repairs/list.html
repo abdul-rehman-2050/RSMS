@@ -1,75 +1,88 @@
 {% extends "base.html" %}
+
 {% block content %}
-<section class="max-w-6xl mx-auto px-6 py-16 space-y-6">
+<div class="space-y-6">
 
-<h2 class="text-2xl font-semibold">Repair Orders</h2>
-
-<form method="get" action="{{ url_for('repair.list_repairs') }}"
-      class="flex flex-wrap gap-4">
-
-    <input name="q"
-           value="{{ request.args.get('q','') }}"
-           placeholder="Search customer or device"
-           class="px-3 py-2 rounded border
-                  bg-white dark:bg-slate-900
-                  border-slate-300 dark:border-slate-700">
-
-    <select name="status"
-            class="px-3 py-2 rounded border
-                   bg-white dark:bg-slate-900
-                   border-slate-300 dark:border-slate-700">
-        <option value="">All Status</option>
-        <option>Pending</option>
-        <option>In Progress</option>
-        <option>Completed</option>
-    </select>
-
-    <button class="bg-blue-500 text-white px-4 py-2 rounded">
-        Search
-    </button>
-
-    <a href="{{ url_for('repair.add_repair') }}"
-       class="ml-auto bg-green-500 text-white px-4 py-2 rounded">
-        + New Repair
-    </a>
-</form>
-
-<table class="w-full text-sm mt-6">
-<thead class="bg-slate-100 dark:bg-slate-800">
-<tr>
-    <th class="p-2 text-left">Customer</th>
-    <th class="p-2">Device</th>
-    <th class="p-2">Status</th>
-    <th class="p-2">Created</th>
-    <th class="p-2"></th>
-</tr>
-</thead>
-<tbody>
-{% for r in repairs %}
-<tr class="border-b dark:border-slate-700">
-    <td class="p-2">
-        <a href="{{ url_for('customer.customer_details', id=r.customer.id) }}"
-           class="text-blue-500">
-            {{ r.customer.name }}
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+            <h2 class="text-2xl font-bold text-slate-800 dark:text-white">Repair Orders</h2>
+            <nav class="flex text-sm text-slate-500 mt-1">
+                <span>Dashboard</span>
+                <span class="mx-2">/</span>
+                <span class="text-slate-800 dark:text-slate-200 font-medium">Repairs</span>
+            </nav>
+        </div>
+        <a href="{{ url_for('repair.add_repair') }}" 
+           class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium shadow-lg shadow-blue-500/30 transition flex items-center gap-2">
+            <span>+</span> New Order
         </a>
-    </td>
-    <td class="p-2">{{ r.device }}</td>
-    <td class="p-2">{{ r.status }}</td>
-    <td class="p-2">{{ r.created_at.strftime('%Y-%m-%d') }}</td>
-    <td class="p-2">
-        <a href="{{ url_for('repair.view_repair', id=r.id) }}"
-           class="text-blue-500 text-sm">View</a>
-    </td>
-</tr>
-{% else %}
-<tr>
-<td colspan="5" class="p-4 text-center text-slate-500">
-    No repair orders found
-</td>
-</tr>
-{% endfor %}
-</tbody>
-</table>
+    </div>
 
-</section>
+    <div class="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800">
+        <form method="get" action="{{ url_for('repair.list_repairs') }}" class="grid grid-cols-1 md:grid-cols-12 gap-4">
+            
+            <div class="md:col-span-6 relative">
+                <input name="q" value="{{ request.args.get('q','') }}" 
+                       placeholder="Search by customer, device..." 
+                       class="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition dark:text-white">
+                <svg class="w-5 h-5 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
+
+            <div class="md:col-span-4">
+                <select name="status" class="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none dark:text-white">
+                    <option value="">All Statuses</option>
+                    <option {% if request.args.get('status') == 'Pending' %}selected{% endif %}>Pending</option>
+                    <option {% if request.args.get('status') == 'In Progress' %}selected{% endif %}>In Progress</option>
+                    <option {% if request.args.get('status') == 'Completed' %}selected{% endif %}>Completed</option>
+                </select>
+            </div>
+
+            <div class="md:col-span-2">
+                <button type="submit" class="w-full bg-slate-800 dark:bg-slate-700 text-white py-2 rounded-lg hover:bg-slate-700 transition font-medium">
+                    Filter
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+        <table class="w-full text-left text-sm">
+            <thead class="bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-700">
+                <tr>
+                    <th class="p-4 font-medium">Customer</th>
+                    <th class="p-4 font-medium">Device</th>
+                    <th class="p-4 font-medium">Status</th>
+                    <th class="p-4 font-medium">Date</th>
+                    <th class="p-4 font-medium text-right">Action</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                {% for r in repairs %}
+                <tr class="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
+                    <td class="p-4 font-medium text-slate-900 dark:text-white">{{ r.customer.name }}</td>
+                    <td class="p-4 text-slate-600 dark:text-slate-300">{{ r.device }}</td>
+                    <td class="p-4">
+                         <span class="px-2.5 py-1 rounded-full text-xs font-medium border
+                            {% if r.status == 'Pending' %} bg-yellow-50 text-yellow-700 border-yellow-200
+                            {% elif r.status == 'In Progress' %} bg-blue-50 text-blue-700 border-blue-200
+                            {% elif r.status == 'Completed' %} bg-green-50 text-green-700 border-green-200
+                            {% else %} bg-slate-100 text-slate-600 {% endif %}">
+                            {{ r.status }}
+                        </span>
+                    </td>
+                    <td class="p-4 text-slate-500">{{ r.created_at.strftime('%Y-%m-%d') }}</td>
+                    <td class="p-4 text-right">
+                        <a href="{{ url_for('repair.view_repair', id=r.id) }}" class="text-blue-600 hover:text-blue-800 font-medium opacity-0 group-hover:opacity-100 transition">View →</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="p-8 text-center text-slate-500">No repairs found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
 {% endblock %}
