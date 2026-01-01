@@ -1,14 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="max-w-xl mx-auto px-6 py-16">
-<div class="bg-white dark:bg-slate-900 p-6 rounded-xl shadow">
 
-<h2 class="text-2xl font-bold mb-4">{{ action }} Repair Order</h2>
+<h2 class="text-2xl font-semibold mb-6">{{ action }} Repair</h2>
 
 <form method="post" class="space-y-4">
 
 <select name="customer_id" required
- class="w-full p-2 rounded bg-slate-100 dark:bg-slate-800">
+        class="w-full px-3 py-2 rounded border
+               bg-white dark:bg-slate-900
+               border-slate-300 dark:border-slate-700">
     {% for c in customers %}
     <option value="{{ c.id }}"
         {% if repair and repair.customer_id == c.id %}selected{% endif %}>
@@ -17,30 +18,32 @@
     {% endfor %}
 </select>
 
-<input name="device" placeholder="Device"
- value="{{ repair.device if repair else '' }}" required
- class="w-full p-2 rounded bg-slate-100 dark:bg-slate-800">
+<input name="device" required
+       value="{{ repair.device if repair else '' }}"
+       placeholder="Device"
+       class="w-full px-3 py-2 rounded border
+              bg-white dark:bg-slate-900
+              border-slate-300 dark:border-slate-700">
 
-<textarea name="issue_description" placeholder="Issue description"
- class="w-full p-2 rounded bg-slate-100 dark:bg-slate-800"
- required>{{ repair.issue_description if repair else '' }}</textarea>
+<textarea name="issue_description" required
+          placeholder="Issue description"
+          class="w-full px-3 py-2 rounded border
+                 bg-white dark:bg-slate-900
+                 border-slate-300 dark:border-slate-700">{{ repair.issue_description if repair else '' }}</textarea>
 
 <select name="status"
- class="w-full p-2 rounded bg-slate-100 dark:bg-slate-800">
-    {% for s in ['Pending','In Progress','Completed','Delivered'] %}
-    <option value="{{ s }}"
-        {% if repair and repair.status == s %}selected{% endif %}>
-        {{ s }}
-    </option>
-    {% endfor %}
+        class="w-full px-3 py-2 rounded border
+               bg-white dark:bg-slate-900
+               border-slate-300 dark:border-slate-700">
+    <option>Pending</option>
+    <option>In Progress</option>
+    <option>Completed</option>
 </select>
 
-<button class="w-full bg-blue-500 text-white py-2 rounded">
-    {{ action }} Repair
+<button class="bg-blue-500 text-white px-5 py-2 rounded">
+    Save
 </button>
 
 </form>
-
-</div>
 </section>
 {% endblock %}

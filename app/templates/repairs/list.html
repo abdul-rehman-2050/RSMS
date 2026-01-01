@@ -1,40 +1,75 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="max-w-6xl mx-auto px-6 py-16">
-<div class="bg-white dark:bg-slate-900 p-6 rounded-xl shadow">
+<section class="max-w-6xl mx-auto px-6 py-16 space-y-6">
 
-<div class="flex justify-between mb-4">
-    <h2 class="text-2xl font-bold">Repair Orders</h2>
+<h2 class="text-2xl font-semibold">Repair Orders</h2>
+
+<form method="get" action="{{ url_for('repair.list_repairs') }}"
+      class="flex flex-wrap gap-4">
+
+    <input name="q"
+           value="{{ request.args.get('q','') }}"
+           placeholder="Search customer or device"
+           class="px-3 py-2 rounded border
+                  bg-white dark:bg-slate-900
+                  border-slate-300 dark:border-slate-700">
+
+    <select name="status"
+            class="px-3 py-2 rounded border
+                   bg-white dark:bg-slate-900
+                   border-slate-300 dark:border-slate-700">
+        <option value="">All Status</option>
+        <option>Pending</option>
+        <option>In Progress</option>
+        <option>Completed</option>
+    </select>
+
+    <button class="bg-blue-500 text-white px-4 py-2 rounded">
+        Search
+    </button>
+
     <a href="{{ url_for('repair.add_repair') }}"
-       class="bg-blue-500 text-white px-4 py-2 rounded">+ New Repair</a>
-</div>
+       class="ml-auto bg-green-500 text-white px-4 py-2 rounded">
+        + New Repair
+    </a>
+</form>
 
-<table class="w-full text-sm">
+<table class="w-full text-sm mt-6">
 <thead class="bg-slate-100 dark:bg-slate-800">
 <tr>
     <th class="p-2 text-left">Customer</th>
     <th class="p-2">Device</th>
     <th class="p-2">Status</th>
-    <th class="p-2">Actions</th>
+    <th class="p-2">Created</th>
+    <th class="p-2"></th>
 </tr>
 </thead>
 <tbody>
 {% for r in repairs %}
 <tr class="border-b dark:border-slate-700">
-    <td class="p-2">{{ r.customer.name }}</td>
+    <td class="p-2">
+        <a href="{{ url_for('customer.customer_details', id=r.customer.id) }}"
+           class="text-blue-500">
+            {{ r.customer.name }}
+        </a>
+    </td>
     <td class="p-2">{{ r.device }}</td>
     <td class="p-2">{{ r.status }}</td>
-    <td class="p-2 flex gap-2">
-        <a href="{{ url_for('repair.edit_repair', id=r.id) }}" class="text-blue-500">Edit</a>
-        <form method="post" action="{{ url_for('repair.delete_repair', id=r.id) }}">
-            <button class="text-red-500">Delete</button>
-        </form>
+    <td class="p-2">{{ r.created_at.strftime('%Y-%m-%d') }}</td>
+    <td class="p-2">
+        <a href="{{ url_for('repair.view_repair', id=r.id) }}"
+           class="text-blue-500 text-sm">View</a>
     </td>
+</tr>
+{% else %}
+<tr>
+<td colspan="5" class="p-4 text-center text-slate-500">
+    No repair orders found
+</td>
 </tr>
 {% endfor %}
 </tbody>
 </table>
 
-</div>
 </section>
 {% endblock %}

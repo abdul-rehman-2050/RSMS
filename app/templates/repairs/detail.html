@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="max-w-4xl mx-auto px-6 py-16 space-y-6">
+
+<h2 class="text-2xl font-semibold">Repair Details</h2>
+
+<div class="bg-white dark:bg-slate-900 p-6 rounded shadow space-y-2">
+<p><strong>Customer:</strong> {{ repair.customer.name }}</p>
+<p><strong>Device:</strong> {{ repair.device }}</p>
+<p><strong>Issue:</strong> {{ repair.issue_description }}</p>
+<p><strong>Status:</strong> {{ repair.status }}</p>
+</div>
+
+<form method="post"
+      action="{{ url_for('repair.update_repair_status', id=repair.id) }}"
+      class="flex gap-3 items-center">
+    <select name="status"
+            class="px-3 py-2 rounded border
+                   bg-white dark:bg-slate-900
+                   border-slate-300 dark:border-slate-700">
+        <option>Pending</option>
+        <option>In Progress</option>
+        <option>Completed</option>
+    </select>
+    <button class="bg-blue-500 text-white px-4 py-2 rounded">
+        Update Status
+    </button>
+</form>
+
+</section>
+{% endblock %}

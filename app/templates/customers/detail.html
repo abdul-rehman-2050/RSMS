@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="max-w-xl mx-auto px-6 py-16">
+
+<div class="bg-white dark:bg-slate-900 shadow rounded-xl p-6 space-y-4">
+    <h2 class="text-2xl font-bold">Customer Details</h2>
+
+    <div>
+        <p class="text-sm text-slate-500">Name</p>
+        <p class="font-semibold">{{ customer.name }}</p>
+    </div>
+
+    <div>
+        <p class="text-sm text-slate-500">Email</p>
+        <p class="font-semibold">{{ customer.email }}</p>
+    </div>
+
+    <div>
+        <p class="text-sm text-slate-500">Phone</p>
+        <p class="font-semibold">{{ customer.phone }}</p>
+    </div>
+
+    <div class="flex gap-4 pt-4">
+        <a href="{{ url_for('customer.edit_customer', id=customer.id) }}"
+           class="bg-yellow-500 text-white px-5 py-2 rounded">
+            Edit
+        </a>
+
+        <a href="{{ url_for('customer.view_customers') }}"
+           class="bg-slate-700 text-white px-5 py-2 rounded">
+            Back
+        </a>
+    </div>
+</div>
+
+</section>
+{% endblock %}
